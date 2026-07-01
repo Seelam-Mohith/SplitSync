@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import Spinner from '../components/ui/Spinner';
+import Button from '../components/ui/Button';
 
 const subIcons = {
   netflix: 'N',
@@ -64,12 +66,7 @@ export default function GroupsPage() {
   if (groups.length === 0) {
     return (
       <div className="p-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold">My Groups</h1>
-          <p className="text-text-secondary text-sm mt-1">
-            Groups you own or are a member of.
-          </p>
-        </div>
+        <Header />
         <div className="bg-surface-card border border-white/10 rounded-xl p-10 text-center">
           <p className="text-text-secondary text-lg">
             No groups yet
@@ -84,12 +81,7 @@ export default function GroupsPage() {
 
   return (
     <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">My Groups</h1>
-        <p className="text-text-secondary text-sm mt-1">
-          Groups you own or are a member of.
-        </p>
-      </div>
+      <Header />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {groups.map((group) => (
@@ -155,6 +147,31 @@ function Stat({ label, value }) {
     <div>
       <p className="text-text-muted text-xs">{label}</p>
       <p className="text-sm font-medium mt-0.5">{value}</p>
+    </div>
+  );
+}
+
+function Header() {
+  return (
+    <div className="flex items-center justify-between mb-8">
+      <div>
+        <h1 className="text-2xl font-bold">My Groups</h1>
+        <p className="text-text-secondary text-sm mt-1">
+          Groups you own or are a member of.
+        </p>
+      </div>
+      <div className="flex items-center gap-3">
+        <Link to="/join">
+          <Button variant="secondary" size="sm">
+            Join Group
+          </Button>
+        </Link>
+        <Link to="/groups/new">
+          <Button variant="primary" size="sm">
+            Create Group
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 }

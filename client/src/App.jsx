@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import GroupsPage from './pages/GroupsPage';
 import JoinGroup from './pages/JoinGroup';
+import CreateGroup from './pages/CreateGroup';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/groups" element={<GroupsPage />} />
               <Route path="/join" element={<JoinGroup />} />
+              <Route path="/groups/new" element={<CreateGroup />} />
               <Route
                 path="/activity"
                 element={
