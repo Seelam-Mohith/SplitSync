@@ -5,6 +5,7 @@ import MainLayout from './components/layout/MainLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import GroupsPage from './pages/GroupsPage';
 
 export default function App() {
   return (
@@ -16,14 +17,7 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route
-                path="/groups"
-                element={
-                  <div className="p-8 text-text-secondary">
-                    Groups page coming soon
-                  </div>
-                }
-              />
+              <Route path="/groups" element={<GroupsPage />} />
               <Route
                 path="/activity"
                 element={
