@@ -3,28 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import Spinner from '../components/ui/Spinner';
 import Button from '../components/ui/Button';
-
-const subIcons = {
-  netflix: 'N',
-  spotify: 'S',
-  youtube: 'YT',
-  'disney+': 'D+',
-  hbo: 'HBO',
-  amazon: 'A',
-  apple: 'A',
-  other: '?',
-};
-
-const subColors = {
-  netflix: 'bg-red-600',
-  spotify: 'bg-green-600',
-  youtube: 'bg-red-500',
-  'disney+': 'bg-blue-700',
-  hbo: 'bg-purple-600',
-  amazon: 'bg-orange-500',
-  apple: 'bg-gray-500',
-  other: 'bg-surface-lighter',
-};
+import PlatformLogo from '../components/ui/PlatformLogo';
 
 export default function GroupsPage() {
   const [groups, setGroups] = useState([]);
@@ -93,17 +72,10 @@ export default function GroupsPage() {
 }
 
 function GroupCard({ group }) {
-  const icon = subIcons[group.subscriptionType] || '?';
-  const color = subColors[group.subscriptionType] || 'bg-surface-lighter';
-
   return (
     <div className="bg-surface-card border border-white/10 rounded-xl p-5 hover:bg-surface-hover transition-colors group cursor-pointer">
       <div className="flex items-start gap-4">
-        <div
-          className={`w-12 h-12 rounded-lg ${color} flex items-center justify-center text-white font-bold text-sm shrink-0`}
-        >
-          {icon}
-        </div>
+        <PlatformLogo type={group.subscriptionType} />
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">

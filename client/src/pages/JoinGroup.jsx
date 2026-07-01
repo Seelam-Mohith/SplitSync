@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
+import PlatformLogo from '../components/ui/PlatformLogo';
 
 export default function JoinGroup() {
   const [inviteCode, setInviteCode] = useState('');
@@ -76,21 +77,7 @@ export default function JoinGroup() {
       {group && (
         <div className="bg-surface-card border border-white/10 rounded-xl p-6 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
-              <svg
-                className="w-5 h-5 text-accent"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
+            <PlatformLogo type={group.subscriptionType} size="md" />
             <div>
               <p className="font-semibold text-lg">Joined successfully!</p>
               <p className="text-text-secondary text-sm">
