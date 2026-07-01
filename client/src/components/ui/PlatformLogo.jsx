@@ -3,7 +3,7 @@ import spotifyLogo from '../../assets/logos/spotify.svg';
 import youtubeLogo from '../../assets/logos/youtube.svg';
 import disneyLogo from '../../assets/logos/disney-plus.svg';
 import hboLogo from '../../assets/logos/hbo.svg';
-import amazonLogo from '../../assets/logos/amazon.svg';
+import amazonLogo from '../../assets/logos/primevideo.png';
 import appleLogo from '../../assets/logos/apple.svg';
 import otherLogo from '../../assets/logos/other.svg';
 
@@ -24,7 +24,7 @@ const colors = {
   youtube: 'bg-[#ff0000]',
   'disney+': 'bg-[#113ccf]',
   hbo: 'bg-[#5822b4]',
-  amazon: 'bg-[#ff9900]',
+  amazon: 'bg-[#1a242f]',
   apple: 'bg-[#555555]',
   other: 'bg-surface-lighter',
 };
@@ -38,7 +38,7 @@ export default function PlatformLogo({ type, size = 'md', className = '' }) {
     <div
       className={`${sizes[size]} ${color} rounded-lg flex items-center justify-center shrink-0 ${className}`}
     >
-      <img src={src} alt={type || 'logo'} className={type === 'netflix' ? 'w-full h-full object-contain' : 'w-6 h-6 object-contain'} />
+      <img src={src} alt={type || 'logo'} className={`${type === 'netflix' || type === 'amazon' ? 'w-full h-full object-contain rounded-lg' : 'w-6 h-6 object-contain'}`} />
     </div>
   );
 }
