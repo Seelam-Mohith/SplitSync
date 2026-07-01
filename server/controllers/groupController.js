@@ -1,6 +1,64 @@
 import Group from '../models/Group.js';
 import GroupMember from '../models/GroupMember.js';
 
+export const joinGroup = async (req, res, next) => {
+  try {
+    const { inviteCode } = req.body;
+
+    if (!inviteCode) {
+      const error = new Error('Invite code is required');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const group = await Group.findOne({ inviteCode: inviteCode.toLowerCase() });
+
+    if (!group) {
+      const error = new Error('Invalid invite code');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const existing = await GroupMember.findOne({
+      groupId: group._id,
+      userId: req.user._id,
+    });
+
+    if (existing) {
+      const error = new Error('You are already a member of this group');
+      error.statusCode = 409;
+      throw error;
+    }
+
+    const memberCount = await GroupMember.countDocuments({
+      groupId: group._id,
+    });
+
+    if (memberCount >= group.maxMembers) {
+      const error = new Error('Group is full');
+      error.statusCode = 400;
+      throw error;
+    }
+
+    await GroupMember.create({
+      groupId: group._id,
+      userId: req.user._id,
+      role: 'MEMBER',
+    });
+
+    const populated = await Group.findById(group._id)
+      .populate('ownerId', 'name email avatar')
+      .lean();
+
+    res.status(200).json({
+      success: true,
+      data: { group: { ...populated, role: 'MEMBER', memberCount: memberCount + 1 } },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getMyGroups = async (req, res, next) => {
   try {
     const memberships = await GroupMember.find({ userId: req.user._id })
