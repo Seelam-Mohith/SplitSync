@@ -1,16 +1,25 @@
+import netflixLogo from '../../assets/logos/netflix.webp';
+import spotifyLogo from '../../assets/logos/spotify.svg';
+import youtubeLogo from '../../assets/logos/youtube.svg';
+import disneyLogo from '../../assets/logos/disney-plus.svg';
+import hboLogo from '../../assets/logos/hbo.svg';
+import amazonLogo from '../../assets/logos/amazon.svg';
+import appleLogo from '../../assets/logos/apple.svg';
+import otherLogo from '../../assets/logos/other.svg';
+
 const logos = {
-  netflix: NetflixLogo,
-  spotify: SpotifyLogo,
-  youtube: YoutubeLogo,
-  'disney+': DisneyLogo,
-  hbo: HboLogo,
-  amazon: AmazonLogo,
-  apple: AppleLogo,
-  other: OtherLogo,
+  netflix: netflixLogo,
+  spotify: spotifyLogo,
+  youtube: youtubeLogo,
+  'disney+': disneyLogo,
+  hbo: hboLogo,
+  amazon: amazonLogo,
+  apple: appleLogo,
+  other: otherLogo,
 };
 
 const colors = {
-  netflix: 'bg-[#e50914]',
+  netflix: 'bg-black',
   spotify: 'bg-[#1db954]',
   youtube: 'bg-[#ff0000]',
   'disney+': 'bg-[#113ccf]',
@@ -21,7 +30,7 @@ const colors = {
 };
 
 export default function PlatformLogo({ type, size = 'md', className = '' }) {
-  const Logo = logos[type] || OtherLogo;
+  const src = logos[type] || otherLogo;
   const color = colors[type] || 'bg-surface-lighter';
   const sizes = { sm: 'w-8 h-8', md: 'w-12 h-12', lg: 'w-16 h-16' };
 
@@ -29,72 +38,7 @@ export default function PlatformLogo({ type, size = 'md', className = '' }) {
     <div
       className={`${sizes[size]} ${color} rounded-lg flex items-center justify-center shrink-0 ${className}`}
     >
-      <Logo />
+      <img src={src} alt={type || 'logo'} className={type === 'netflix' ? 'w-full h-full object-contain' : 'w-6 h-6 object-contain'} />
     </div>
-  );
-}
-
-function NetflixLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
-      <path d="M5 2h3l7 16.5V2h3v20h-3L8 5.5V22H5V2z" />
-    </svg>
-  );
-}
-
-function SpotifyLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
-      <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.383-.734.5-1.117.26-2.814-1.74-6.342-2.11-10.497-1.14-.427.102-.852-.16-.954-.586-.102-.427.16-.852.587-.955 4.566-1.08 8.478-.63 11.64 1.29.386.23.512.73.34 1.13zm1.488-3.254c-.28.447-.86.61-1.324.33-3.207-1.98-8.092-2.54-11.87-1.38-.476.15-1.01-.13-1.16-.606-.15-.477.13-1.01.606-1.16 4.254-1.31 9.63-.7 13.27 1.56.458.28.61.876.33 1.324l.148-.068zm.11-3.34c-3.852-2.29-10.19-2.5-13.86-1.38-.57.17-1.17-.16-1.34-.73-.17-.57.16-1.17.73-1.34 4.16-1.26 11.14-1.02 15.5 1.53.52.31.69 1 .38 1.52-.31.52-1 .69-1.52.38l.07.03z" />
-    </svg>
-  );
-}
-
-function YoutubeLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
-      <path d="M23.5 6.19A3.02 3.02 0 0020.2 3.9c-2.49-.34-7.49-.5-8.2-.5s-5.71.16-8.2.5A3.02 3.02 0 00.5 6.19C.17 8.08 0 10.05 0 12c0 1.95.17 3.92.5 5.81a3.02 3.02 0 002.3 2.29c2.49.34 7.49.5 8.2.5s5.71-.16 8.2-.5a3.02 3.02 0 002.3-2.29c.33-1.89.5-3.86.5-5.81 0-1.95-.17-3.92-.5-5.81zM9.55 15.57V8.43L16.82 12l-7.27 3.57z" />
-    </svg>
-  );
-}
-
-function DisneyLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5.5 13.5c-.3.8-.9 1.3-1.7 1.6-1.1.4-2.4.6-3.9.6-2 0-4.1-.3-6.1-1V7l.7.6c.7.6 1.7 1 2.9 1.1.9.1 2 .2 3.5.2 1.9 0 3.5.2 4.7.5.5.2.7.3.7.7 0 .3-.3.6-.6.8-.2.2-.5.3-.8.4-.4.2-1 .3-1.8.4-.8.1-1.8.2-2.9.2h-.1c-2.9 0-5-.2-6.5-.5v4.4c2.2.5 5.1.7 8.8.7 1.6 0 3.2-.1 4.6-.4.6-.1 1.1-.3 1.6-.5.5-.3.8-.6 1-.9.2-.4.3-.9.3-1.5 0-1.5-.6-2.5-1.8-3.1-.6-.3-1.4-.5-2.3-.6-1.1-.2-2.5-.3-4.2-.3-1.6 0-2.9.1-3.9.3-1.1.2-1.9.5-2.4.8-.4.3-.6.6-.8 1-.1.4-.2.8-.2 1.2 0 .6.1 1.2.4 1.8.1.3.1.5-.1.6-.2.1-.6.1-1.1-.2-.5-.2-.9-.5-1.3-.9-.3-.3-.5-.6-.7-.9-.3-.5-.5-1.1-.5-1.7 0-.7.2-1.3.6-1.9.4-.6.9-1.1 1.6-1.5.7-.4 1.6-.7 2.6-.9 1.2-.2 2.5-.4 4.1-.4 2.3 0 4.2.2 5.7.6 1.4.4 2.4 1 3.2 1.7.7.7 1.1 1.7 1.1 2.9 0 1.3-.4 2.3-1.1 3z" />
-    </svg>
-  );
-}
-
-function HboLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
-      <circle cx="12" cy="12" r="9" stroke="white" strokeWidth="1.5" fill="none" />
-      <text x="12" y="15.5" textAnchor="middle" fontSize="8" fontWeight="bold" fill="white">HBO</text>
-    </svg>
-  );
-}
-
-function AmazonLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
-      <path d="M17.3 10.8c-.2.1-.4.2-.7.3-.4.1-1 .2-1.7.3-.8.1-1.7.2-2.8.2s-2.1-.1-2.8-.2c-1-.1-1.7-.3-2.2-.5-.3-.1-.4-.3-.4-.5 0-.2.1-.4.3-.5.2-.1.5-.2.9-.2.3 0 .7.1 1.1.2.4.1.9.2 1.5.2.6.1 1.2.1 2 .1s1.4 0 2-.1c.6-.1 1.1-.2 1.5-.3.4-.1.7-.1.9-.2.2 0 .4 0 .4.2v.6c0 .3-.1.5-.4.6zM6.8 7.5c0-.4.1-.7.3-.9.2-.2.5-.3.9-.3h1.4c.4 0 .7.1.9.3.2.2.3.5.3.9v3.4c0 .1 0 .2.1.2.1 0 .2-.1.3-.2l1.8-2.5c.3-.4.6-.7 1-.9.3-.1.6-.2 1-.2h1.1c.3 0 .6.1.8.2.2.1.3.3.3.5s-.1.4-.2.5c-.1.1-.3.2-.5.2h-.6c-.2 0-.4.1-.6.3-.2.2-.4.4-.6.7l-1.2 1.6c-.1.1-.1.2 0 .3.1.1.2.2.3.2l2.5 1.7c.3.2.5.5.7.8.1.3.2.6.2 1v.2c0 .3-.1.7-.3 1-.2.3-.5.5-.8.7-.3.1-.7.2-1 .2H14c-.5 0-.9-.1-1.3-.3-.4-.2-.7-.5-.9-.8-.2-.3-.3-.7-.3-1.1v-2.3c0-.1-.1-.2-.2-.1 0 0-.1.1-.1.2l-.8 3.1c-.1.4-.3.8-.6 1.1-.3.3-.6.5-1 .6-.3.1-.5.2-.8.2H6.9c-.3 0-.6-.1-.8-.2-.2-.1-.3-.3-.3-.5s.1-.4.2-.5c.1-.1.3-.2.5-.2h.6c.2 0 .4-.1.6-.3.2-.2.3-.4.4-.7l.7-2.7c0-.2.1-.4.1-.6V7.5z" />
-    </svg>
-  );
-}
-
-function AppleLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
-      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.7-.83 1.87-1.45 2.87-1.47.13 1.13-.33 2.26-.99 3.06-.68.84-1.82 1.46-2.85 1.42-.11-1.1.33-2.23.97-3.01z" />
-    </svg>
-  );
-}
-
-function OtherLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-    </svg>
   );
 }
