@@ -33,7 +33,13 @@ export default function GroupsPage() {
     api
       .get('/groups')
       .then(({ data }) => setGroups(data.data.groups))
-      .catch((err) => setError(err.response?.data?.message || 'Failed to load groups'))
+      .catch((err) => {
+        if (!err.response) {
+          setError('Cannot connect to server. Make sure the backend is running.');
+        } else {
+          setError(err.response?.data?.message || 'Failed to load groups');
+        }
+      })
       .finally(() => setLoading(false));
   }, []);
 
