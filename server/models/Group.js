@@ -26,7 +26,7 @@ const groupSchema = new mongoose.Schema(
           'netflix',
           'spotify',
           'youtube',
-          'disney+',
+          'jiohotstar',
           'hbo',
           'amazon',
           'apple',

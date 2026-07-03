@@ -1,7 +1,7 @@
 import netflixLogo from '../../assets/logos/netflix.webp';
 import spotifyLogo from '../../assets/logos/spotify.svg';
 import youtubeLogo from '../../assets/logos/youtube.svg';
-import disneyLogo from '../../assets/logos/disney-plus.svg';
+import jiohotstarLogo from '../../assets/logos/jiohotstar.svg';
 import hboLogo from '../../assets/logos/hbo.svg';
 import amazonLogo from '../../assets/logos/primevideo.png';
 import appleLogo from '../../assets/logos/apple.svg';
@@ -11,7 +11,7 @@ const logos = {
   netflix: netflixLogo,
   spotify: spotifyLogo,
   youtube: youtubeLogo,
-  'disney+': disneyLogo,
+  jiohotstar: jiohotstarLogo,
   hbo: hboLogo,
   amazon: amazonLogo,
   apple: appleLogo,
@@ -22,7 +22,7 @@ const colors = {
   netflix: 'bg-black',
   spotify: 'bg-[#1db954]',
   youtube: 'bg-[#ff0000]',
-  'disney+': 'bg-[#113ccf]',
+  jiohotstar: 'bg-[#e03b3b]',
   hbo: 'bg-[#5822b4]',
   amazon: 'bg-[#1a242f]',
   apple: 'bg-[#555555]',

@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import connectDB from './config/db.js';
+import connectDB, { isConnected } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import groupRoutes from './routes/groupRoutes.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', database: isConnected ? 'connected' : 'disconnected', timestamp: new Date().toISOString() });
 });
 
 app.use('/api/auth', authRoutes);

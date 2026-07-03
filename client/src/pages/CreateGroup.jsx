@@ -5,9 +5,20 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 
 const subscriptionTypes = [
-  'netflix', 'spotify', 'youtube', 'disney+',
+  'netflix', 'spotify', 'youtube', 'jiohotstar',
   'hbo', 'amazon', 'apple', 'other',
 ];
+
+const displayNames = {
+  netflix: 'Netflix',
+  spotify: 'Spotify',
+  youtube: 'YouTube',
+  jiohotstar: 'Jio Hotstar',
+  hbo: 'HBO',
+  amazon: 'Amazon Prime',
+  apple: 'Apple TV',
+  other: 'Other',
+};
 
 export default function CreateGroup() {
   const navigate = useNavigate();
@@ -93,7 +104,7 @@ export default function CreateGroup() {
           >
             {subscriptionTypes.map((t) => (
               <option key={t} value={t}>
-                {t.charAt(0).toUpperCase() + t.slice(1)}
+                {displayNames[t]}
               </option>
             ))}
           </select>
