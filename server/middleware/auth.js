@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import GroupMember from '../models/GroupMember.js';
 
 export const protect = async (req, _res, next) => {
   try {
@@ -37,6 +38,26 @@ export const protect = async (req, _res, next) => {
       error.message = 'Token expired';
       error.statusCode = 401;
     }
+    next(error);
+  }
+};
+
+export const isGroupOwner = async (req, _res, next) => {
+  try {
+    const membership = await GroupMember.findOne({
+      groupId: req.params.id,
+      userId: req.user._id,
+    });
+
+    if (!membership || membership.role !== 'OWNER') {
+      const error = new Error('Not authorized. Only the group owner can perform this action');
+      error.statusCode = 403;
+      throw error;
+    }
+
+    req.groupMembership = membership;
+    next();
+  } catch (error) {
     next(error);
   }
 };

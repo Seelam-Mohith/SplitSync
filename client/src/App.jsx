@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import GroupsPage from './pages/GroupsPage';
+import GroupDetail from './pages/GroupDetail';
 import JoinGroup from './pages/JoinGroup';
 import CreateGroup from './pages/CreateGroup';
 
@@ -20,6 +21,7 @@ export default function App() {
             <Route element={<MainLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/groups" element={<GroupsPage />} />
+              <Route path="/groups/:id" element={<GroupDetail />} />
               <Route path="/join" element={<JoinGroup />} />
               <Route path="/groups/new" element={<CreateGroup />} />
               <Route

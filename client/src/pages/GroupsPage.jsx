@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import Spinner from '../components/ui/Spinner';
 import Button from '../components/ui/Button';
@@ -72,8 +72,12 @@ export default function GroupsPage() {
 }
 
 function GroupCard({ group }) {
+  const navigate = useNavigate();
   return (
-    <div className="bg-surface-card border border-white/10 rounded-xl p-5 hover:bg-surface-hover transition-colors group cursor-pointer">
+    <div
+      onClick={() => navigate(`/groups/${group._id}`)}
+      className="bg-surface-card border border-white/10 rounded-xl p-5 hover:bg-surface-hover transition-colors cursor-pointer"
+    >
       <div className="flex items-start gap-4">
         <PlatformLogo type={group.subscriptionType} />
 

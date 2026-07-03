@@ -1,11 +1,25 @@
 import { Router } from 'express';
-import { getMyGroups, createGroup, joinGroup } from '../controllers/groupController.js';
-import { protect } from '../middleware/auth.js';
+import {
+  getMyGroups,
+  createGroup,
+  joinGroup,
+  getGroup,
+  updateGroup,
+  deleteGroup,
+  removeMember,
+  transferOwnership,
+} from '../controllers/groupController.js';
+import { protect, isGroupOwner } from '../middleware/auth.js';
 
 const router = Router();
 
 router.get('/', protect, getMyGroups);
 router.post('/', protect, createGroup);
 router.post('/join', protect, joinGroup);
+router.get('/:id', protect, getGroup);
+router.put('/:id', protect, isGroupOwner, updateGroup);
+router.delete('/:id', protect, isGroupOwner, deleteGroup);
+router.delete('/:id/members/:userId', protect, isGroupOwner, removeMember);
+router.put('/:id/transfer', protect, isGroupOwner, transferOwnership);
 
 export default router;
