@@ -1,8 +1,8 @@
 import netflixLogo from '../../assets/logos/netflix.webp';
 import spotifyLogo from '../../assets/logos/spotify.svg';
 import youtubeLogo from '../../assets/logos/youtube.svg';
-import jiohotstarLogo from '../../assets/logos/jiohotstar.svg';
-import hboLogo from '../../assets/logos/hbo.svg';
+import jiohotstarLogo from '../../assets/logos/jiohotstar-logo-hd.webp';
+import hboLogo from '../../assets/logos/hbo.png';
 import amazonLogo from '../../assets/logos/primevideo.png';
 import appleLogo from '../../assets/logos/apple.svg';
 import otherLogo from '../../assets/logos/other.svg';
@@ -38,7 +38,7 @@ export default function PlatformLogo({ type, size = 'md', className = '' }) {
     <div
       className={`${sizes[size]} ${color} rounded-lg flex items-center justify-center shrink-0 ${className}`}
     >
-      <img src={src} alt={type || 'logo'} className={`${type === 'netflix' || type === 'amazon' ? 'w-full h-full object-contain rounded-lg' : 'w-6 h-6 object-contain'}`} />
+      <img src={src} alt={type || 'logo'} className={`${type === 'netflix' || type === 'amazon' || type === 'hbo' ? 'w-full h-full object-contain rounded-lg' : type === 'jiohotstar' ? 'w-full h-full object-contain scale-110 rounded-lg' : 'w-6 h-6 object-contain'}`} />
     </div>
   );
 }
