@@ -45,6 +45,11 @@ export function AuthProvider({ children }) {
     clearAuth();
   }, [clearAuth]);
 
+  const updateUser = useCallback((updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem('splitsync_user', JSON.stringify(updatedUser));
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem('splitsync_token');
     const storedUser = localStorage.getItem('splitsync_user');
@@ -73,7 +78,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, login, register, logout }}
+      value={{ user, loading, login, register, logout, updateUser }}
     >
       {children}
     </AuthContext.Provider>
