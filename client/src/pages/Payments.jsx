@@ -782,7 +782,7 @@ function PaymentRow({
                   message: `Mark ${p.memberId?.name}'s payment as verified?`,
                   confirmLabel: 'Mark Paid',
                   variant: 'primary',
-                  onConfirm: () => onAction('verify', p._id),
+                  onConfirm: () => onAction('update', p._id, { status: 'VERIFIED' }),
                 })
               }
               className="text-xs text-accent hover:text-accent-hover px-2 py-1 rounded hover:bg-accent/10"
@@ -815,7 +815,7 @@ function PaymentRow({
                   message: `Mark ${p.memberId?.name}'s missed payment as verified?`,
                   confirmLabel: 'Mark Paid',
                   variant: 'primary',
-                  onConfirm: () => onAction('verify', p._id),
+                  onConfirm: () => onAction('update', p._id, { status: 'VERIFIED' }),
                 })
               }
               className="text-xs text-accent hover:text-accent-hover px-2 py-1 rounded hover:bg-accent/10"
