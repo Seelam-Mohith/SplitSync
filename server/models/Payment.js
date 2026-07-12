@@ -55,6 +55,23 @@ const paymentSchema = new mongoose.Schema(
       maxlength: [500, 'Remarks cannot exceed 500 characters'],
       default: '',
     },
+    razorpayOrderId: {
+      type: String,
+      default: '',
+    },
+    razorpayPaymentId: {
+      type: String,
+      default: '',
+    },
+    payoutId: {
+      type: String,
+      default: '',
+    },
+    payoutStatus: {
+      type: String,
+      enum: ['NONE', 'INITIATED', 'PROCESSING', 'COMPLETED', 'FAILED'],
+      default: 'NONE',
+    },
   },
   { timestamps: true }
 );

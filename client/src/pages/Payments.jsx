@@ -247,6 +247,58 @@ export default function Payments() {
 }
 
 function MemberView({ currentPayment, history, stats, onSubmit, actionLoading, currentMonth, currentYear }) {
+  const [paying, setPaying] = useState(false);
+
+  const handlePayNow = async () => {
+    if (!currentPayment) return;
+    setPaying(true);
+    try {
+      const orderData = await paymentService.createRazorpayOrder(currentPayment._id);
+
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount * 100,
+        currency: orderData.currency,
+        name: 'SplitSync',
+        description: `Payment for ${orderData.groupName}`,
+        order_id: orderData.orderId,
+        handler: async (response) => {
+          try {
+            await paymentService.verifyRazorpayPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              paymentId: currentPayment._id,
+            });
+            window.location.reload();
+          } catch {
+            alert('Payment was successful but verification failed. Contact support.');
+          }
+        },
+        prefill: {
+          method: 'upi',
+        },
+        theme: {
+          color: '#1db954',
+          backdrop_color: 'rgba(0,0,0,0.6)',
+        },
+        modal: {
+          ondismiss: () => setPaying(false),
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', () => {
+        alert('Payment failed. Please try again.');
+        setPaying(false);
+      });
+      rzp.open();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to initiate payment');
+      setPaying(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-surface-card border border-white/10 rounded-xl p-6">
@@ -276,10 +328,10 @@ function MemberView({ currentPayment, history, stats, onSubmit, actionLoading, c
             {currentPayment.status === 'PENDING' && (
               <Button
                 className="w-full mt-4"
-                onClick={() => onSubmit(currentPayment._id)}
-                loading={actionLoading}
+                onClick={handlePayNow}
+                loading={paying}
               >
-                I&apos;ve Paid
+                Pay ₹{currentPayment.amount} via UPI
               </Button>
             )}
             {currentPayment.status === 'SUBMITTED' && (

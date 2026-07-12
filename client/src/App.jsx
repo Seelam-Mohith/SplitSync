@@ -11,6 +11,7 @@ import JoinGroup from './pages/JoinGroup';
 import CreateGroup from './pages/CreateGroup';
 import Payments from './pages/Payments';
 import Activity from './pages/Activity';
+import Settings from './pages/Settings';
 
 export default function App() {
   return (
@@ -28,14 +29,7 @@ export default function App() {
               <Route path="/join" element={<JoinGroup />} />
               <Route path="/groups/new" element={<CreateGroup />} />
               <Route path="/activity" element={<Activity />} />
-              <Route
-                path="/settings"
-                element={
-                  <div className="p-8 text-text-secondary">
-                    Settings page coming soon
-                  </div>
-                }
-              />
+              <Route path="/settings" element={<Settings />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -34,6 +34,22 @@ const paymentService = {
       .put(`/payments/${paymentId}`, updates)
       .then((r) => r.data.data.payment);
   },
+
+  createRazorpayOrder(paymentId) {
+    return api
+      .post(`/payments/${paymentId}/razorpay-order`)
+      .then((r) => r.data.data);
+  },
+
+  verifyRazorpayPayment(payload) {
+    return api
+      .post(`/payments/${payload.paymentId}/razorpay-verify`, payload)
+      .then((r) => r.data.data.payment);
+  },
+
+  updateUpiId(upiId) {
+    return api.put('/user/profile', { upiId }).then((r) => r.data.data.user);
+  },
 };
 
 export default paymentService;
