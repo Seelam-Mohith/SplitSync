@@ -80,12 +80,14 @@ export default function Dashboard() {
 
   let totalPending = 0;
   let totalPaid = 0;
+  let totalOutstanding = 0;
   let pendingGroups = 0;
   let paidGroups = 0;
 
   groups.forEach((g) => {
     const p = groupPayments[g._id];
     if (p?.current) {
+      totalOutstanding += p.current.amount;
       if (p.current.status === 'VERIFIED') {
         totalPaid += p.current.amount;
         paidGroups++;
@@ -141,9 +143,10 @@ export default function Dashboard() {
           accent="text-green-400"
         />
         <StatCard
-          title="Contribution"
-          value={groups.length > 0 ? `₹${groups[0]?.contributionPerMember || 0}` : '₹0'}
-          description="Per group / month"
+          title="This Month Outstanding"
+          value={`₹${totalOutstanding}`}
+          description={`${totalOutstanding - totalPaid} remaining across groups`}
+          accent="text-blue-400"
         />
       </div>
 
