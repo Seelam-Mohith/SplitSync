@@ -95,6 +95,7 @@ export default function Register() {
             placeholder="+91 98765 43210"
             value={form.phone}
             onChange={handleChange}
+            required
           />
 
           <Input
