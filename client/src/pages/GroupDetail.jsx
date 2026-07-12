@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import Spinner from '../components/ui/Spinner';
 import Button from '../components/ui/Button';
 import PlatformLogo from '../components/ui/PlatformLogo';
+import InviteModal from '../components/ui/InviteModal';
 
 export default function GroupDetail() {
   const { id } = useParams();
@@ -16,6 +17,7 @@ export default function GroupDetail() {
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState({});
   const [transferId, setTransferId] = useState('');
+  const [showInvite, setShowInvite] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const fetchGroup = () => {
@@ -147,6 +149,8 @@ export default function GroupDetail() {
           <div><p className="text-text-muted text-xs">Members</p><p className="text-sm font-medium mt-0.5">{group.memberCount} / {group.maxMembers}</p></div>
           <div><p className="text-text-muted text-xs">Invite Code</p><p className="text-sm font-mono mt-0.5">{group.inviteCode}</p></div>
         </div>
+
+        <Button size="sm" className="w-full mt-4" onClick={() => setShowInvite(true)}>Invite Members</Button>
       </div>
 
       {isOwner && (
@@ -246,6 +250,17 @@ export default function GroupDetail() {
             <Button size="sm" onClick={handleTransfer} disabled={!transferId} loading={submitting}>Transfer</Button>
           </div>
         </div>
+      )}
+
+      {showInvite && (
+        <InviteModal
+          group={group}
+          isOwner={isOwner}
+          onClose={() => setShowInvite(false)}
+          onUpdate={(newCode) => {
+            setGroup((prev) => ({ ...prev, inviteCode: newCode }));
+          }}
+        />
       )}
     </div>
   );

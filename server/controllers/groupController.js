@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import Group from '../models/Group.js';
 import GroupMember from '../models/GroupMember.js';
 
@@ -257,6 +258,30 @@ export const getMyGroups = async (req, res, next) => {
       success: true,
       data: { groups: filtered },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const regenerateInviteCode = async (req, res, next) => {
+  try {
+    const newCode = crypto.randomBytes(4).toString('hex');
+
+    const group = await Group.findByIdAndUpdate(
+      req.params.id,
+      { inviteCode: newCode },
+      { new: true }
+    )
+      .populate('ownerId', 'name email avatar')
+      .lean();
+
+    if (!group) {
+      const error = new Error('Group not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.json({ success: true, data: { inviteCode: group.inviteCode } });
   } catch (error) {
     next(error);
   }
