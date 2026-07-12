@@ -152,95 +152,43 @@ export default function Activity() {
               <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">
                 Groups Overview
               </h2>
-              <div className="bg-surface-card border border-white/10 rounded-xl p-5 overflow-x-auto">
-                <div className="flex items-center gap-0 min-w-max">
-                  {groups.map((g, i) => {
-                    const gPayments = allPayments.find((r) => r.group._id === g._id)?.payments || [];
-                    const current = gPayments.find(
-                      (p) => p.month === currentMonth && p.year === currentYear && p.memberId?._id === user?._id
-                    );
-                    const isPaid = current?.status === 'VERIFIED';
-                    const isSubmitted = current?.status === 'SUBMITTED';
-                    const dotColor = isPaid
-                      ? 'bg-green-400 border-green-400'
-                      : isSubmitted
-                        ? 'bg-blue-400 border-blue-400'
-                        : current?.status === 'MISSED'
-                          ? 'bg-red-400 border-red-400'
-                          : 'bg-yellow-400 border-yellow-400';
+              <div className="relative">
+                <div className="overflow-x-auto scrollbar-hide">
+                  <div className="flex gap-3 min-w-max pr-8">
+                    {groups.map((g) => {
+                      const gPayments = allPayments.find((r) => r.group._id === g._id)?.payments || [];
+                      const current = gPayments.find(
+                        (p) => p.month === currentMonth && p.year === currentYear && p.memberId?._id === user?._id
+                      );
+                      const status = current?.status || 'NO_RECORD';
+                      const dotColor = {
+                        VERIFIED: 'bg-green-400',
+                        SUBMITTED: 'bg-blue-400',
+                        PENDING: 'bg-yellow-400',
+                        MISSED: 'bg-red-400',
+                        NO_RECORD: 'bg-white/20',
+                      }[status];
 
-                    return (
-                      <Link
-                        key={g._id}
-                        to={`/groups/${g._id}/payments`}
-                        className="flex flex-col items-center group"
-                      >
-                        {i > 0 && (
-                          <div className={`h-0.5 w-12 md:w-16 ${isPaid ? 'bg-green-400/40' : 'bg-white/10'}`} />
-                        )}
-                        <div className="flex flex-col items-center">
-                          <div className={`w-4 h-4 rounded-full border-2 ${dotColor} transition-colors`} />
-                          <p className="text-[11px] text-text-secondary mt-2 text-center max-w-[80px] truncate group-hover:text-text-primary transition-colors">
-                            {g.name}
-                          </p>
-                          <p className="text-[10px] text-text-muted mt-0.5">
-                            ₹{current?.amount || g.contributionPerMember}
-                          </p>
-                        </div>
-                      </Link>
-                    );
-                  })}
+                      return (
+                        <Link
+                          key={g._id}
+                          to={`/groups/${g._id}/payments`}
+                          className="bg-surface-card border border-white/10 rounded-xl p-3 w-32 shrink-0 hover:bg-surface-hover transition-colors"
+                        >
+                          <div className="flex items-center gap-1.5 mb-2">
+                            <PlatformLogo type={g.subscriptionType} size="sm" />
+                            <p className="text-xs font-medium truncate">{g.name}</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className={`w-2 h-2 rounded-full ${dotColor}`} />
+                            <p className="text-[11px] text-text-muted">₹{current?.amount || g.contributionPerMember}</p>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
                 </div>
-                <div className="flex items-center gap-4 mt-4 pt-3 border-t border-white/5 text-[11px] text-text-muted">
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-green-400" /> Paid
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-blue-400" /> Submitted
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-yellow-400" /> Pending
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-red-400" /> Missed
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {groups.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">
-                This Month by Group
-              </h2>
-              <div className="space-y-3">
-                {groups.map((g) => {
-                  const gPayments = allPayments.find((r) => r.group._id === g._id)?.payments || [];
-                  const current = gPayments.find(
-                    (p) => p.month === currentMonth && p.year === currentYear && p.memberId?._id === user?._id
-                  );
-                  return (
-                    <Link
-                      key={g._id}
-                      to={`/groups/${g._id}/payments`}
-                      className="flex items-center gap-3 bg-surface-card border border-white/10 rounded-xl p-4 hover:bg-surface-hover transition-colors"
-                    >
-                      <PlatformLogo type={g.subscriptionType} size="sm" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">{g.name}</p>
-                        <p className="text-text-muted text-xs">
-                          ₹{g.contributionPerMember}/mo · {g.memberCount} members
-                        </p>
-                      </div>
-                      {current ? (
-                        <StatusBadge status={current.status} />
-                      ) : (
-                        <span className="text-text-muted text-xs">No record</span>
-                      )}
-                    </Link>
-                  );
-                })}
+                <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-surface to-transparent pointer-events-none" />
               </div>
             </div>
           )}
