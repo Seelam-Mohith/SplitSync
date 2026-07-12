@@ -151,6 +151,7 @@ export default function GroupDetail() {
         </div>
 
         <Button size="sm" className="w-full mt-4" onClick={() => setShowInvite(true)}>Invite Members</Button>
+        <Button size="sm" variant="secondary" className="w-full mt-2" onClick={() => navigate(`/groups/${id}/payments`)}>View Payments</Button>
       </div>
 
       {isOwner && (

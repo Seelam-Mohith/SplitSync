@@ -9,6 +9,8 @@ import GroupsPage from './pages/GroupsPage';
 import GroupDetail from './pages/GroupDetail';
 import JoinGroup from './pages/JoinGroup';
 import CreateGroup from './pages/CreateGroup';
+import Payments from './pages/Payments';
+import Activity from './pages/Activity';
 
 export default function App() {
   return (
@@ -22,16 +24,10 @@ export default function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/groups" element={<GroupsPage />} />
               <Route path="/groups/:id" element={<GroupDetail />} />
+              <Route path="/groups/:id/payments" element={<Payments />} />
               <Route path="/join" element={<JoinGroup />} />
               <Route path="/groups/new" element={<CreateGroup />} />
-              <Route
-                path="/activity"
-                element={
-                  <div className="p-8 text-text-secondary">
-                    Activity page coming soon
-                  </div>
-                }
-              />
+              <Route path="/activity" element={<Activity />} />
               <Route
                 path="/settings"
                 element={

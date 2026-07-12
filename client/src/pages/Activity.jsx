@@ -1,0 +1,289 @@
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../api/axios';
+import Spinner from '../components/ui/Spinner';
+import StatusBadge from '../components/payments/StatusBadge';
+import ProgressBar from '../components/payments/ProgressBar';
+import PlatformLogo from '../components/ui/PlatformLogo';
+
+const MONTH_NAMES = [
+  '', 'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+function formatDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+}
+
+export default function Activity() {
+  const [groups, setGroups] = useState([]);
+  const [allPayments, setAllPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const { data: groupRes } = await api.get('/groups');
+        const groupList = groupRes.data.groups || [];
+        setGroups(groupList);
+
+        const paymentResults = await Promise.all(
+          groupList.map((g) =>
+            api.get(`/payments/group/${g._id}`).then((r) => ({
+              group: g,
+              payments: r.data.data.payments || [],
+            }))
+          )
+        );
+
+        setAllPayments(paymentResults);
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to load activity');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAll();
+  }, []);
+
+  const timeline = [];
+  allPayments.forEach(({ group, payments }) => {
+    payments.forEach((p) => {
+      timeline.push({ ...p, groupName: group.name, groupType: group.subscriptionType, groupId: group._id });
+    });
+  });
+
+  timeline.sort((a, b) => {
+    if (b.year !== a.year) return b.year - a.year;
+    if (b.month !== a.month) return b.month - a.month;
+    return new Date(b.updatedAt) - new Date(a.updatedAt);
+  });
+
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
+
+  let totalCollected = 0;
+  let totalExpected = 0;
+  let verifiedCount = 0;
+  let submittedCount = 0;
+  let pendingCount = 0;
+  let missedCount = 0;
+
+  allPayments.forEach(({ payments }) => {
+    payments.forEach((p) => {
+      if (p.month === currentMonth && p.year === currentYear) {
+        totalExpected += p.amount;
+        if (p.status === 'VERIFIED') { totalCollected += p.amount; verifiedCount++; }
+        else if (p.status === 'SUBMITTED') submittedCount++;
+        else if (p.status === 'MISSED') missedCount++;
+        else pendingCount++;
+      }
+    });
+  });
+
+  const currentMonthItems = timeline.filter(
+    (t) => t.month === currentMonth && t.year === currentYear
+  );
+  const pastItems = timeline.filter(
+    (t) => !(t.month === currentMonth && t.year === currentYear)
+  );
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full pt-20">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-sm text-red-400">
+          {error}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-8 max-w-3xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold">Activity</h1>
+        <p className="text-text-secondary text-sm mt-1">
+          Your payment overview across all groups
+        </p>
+      </div>
+
+      {timeline.length === 0 ? (
+        <div className="text-center py-16">
+          <p className="text-text-muted text-sm">
+            No payment activity yet. Join a group to get started.
+          </p>
+          <Link
+            to="/groups"
+            className="inline-block mt-4 text-accent hover:text-accent-hover text-sm underline underline-offset-2"
+          >
+            Browse Groups
+          </Link>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <SummaryBox label="Collected" value={`₹${totalCollected}`} sub={`of ₹${totalExpected}`} accent="text-green-400" />
+            <SummaryBox label="Pending" value={pendingCount} sub="awaiting action" accent="text-yellow-400" />
+            <SummaryBox label="Submitted" value={submittedCount} sub="awaiting verify" accent="text-blue-400" />
+            <SummaryBox label="Missed" value={missedCount} sub="overdue" accent="text-red-400" />
+          </div>
+
+          {totalExpected > 0 && (
+            <div className="mb-8">
+              <ProgressBar value={Math.round((totalCollected / totalExpected) * 100)} />
+            </div>
+          )}
+
+          {groups.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">
+                This Month by Group
+              </h2>
+              <div className="space-y-3">
+                {groups.map((g) => {
+                  const gPayments = allPayments.find((r) => r.group._id === g._id)?.payments || [];
+                  const current = gPayments.find(
+                    (p) => p.month === currentMonth && p.year === currentYear
+                  );
+                  return (
+                    <Link
+                      key={g._id}
+                      to={`/groups/${g._id}/payments`}
+                      className="flex items-center gap-3 bg-surface-card border border-white/10 rounded-xl p-4 hover:bg-surface-hover transition-colors"
+                    >
+                      <PlatformLogo type={g.subscriptionType} size="sm" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{g.name}</p>
+                        <p className="text-text-muted text-xs">
+                          ₹{g.contributionPerMember}/mo · {g.memberCount} members
+                        </p>
+                      </div>
+                      {current ? (
+                        <StatusBadge status={current.status} />
+                      ) : (
+                        <span className="text-text-muted text-xs">No record</span>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="relative">
+            <div className="absolute left-4 top-0 bottom-0 w-px bg-white/10" />
+
+            {currentMonthItems.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4 pl-10">
+                  {MONTH_NAMES[currentMonth]} {currentYear}
+                </h2>
+                <div className="space-y-4">
+                  {currentMonthItems.map((item) => (
+                    <TimelineItem key={`${item.groupId}-${item.month}-${item.year}`} item={item} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {pastItems.length > 0 && (
+              <div>
+                <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-4 pl-10">
+                  Previous
+                </h2>
+                <div className="space-y-4">
+                  {pastItems.map((item) => (
+                    <TimelineItem key={`${item.groupId}-${item.month}-${item.year}`} item={item} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function SummaryBox({ label, value, sub, accent = '' }) {
+  return (
+    <div className="bg-surface-card border border-white/10 rounded-xl p-4">
+      <p className="text-text-muted text-xs font-medium">{label}</p>
+      <p className={`text-xl font-bold mt-1 ${accent}`}>{value}</p>
+      {sub && <p className="text-text-secondary text-xs mt-0.5">{sub}</p>}
+    </div>
+  );
+}
+
+function TimelineItem({ item }) {
+  const dotColor = {
+    VERIFIED: 'bg-green-400',
+    SUBMITTED: 'bg-blue-400',
+    MISSED: 'bg-red-400',
+    PENDING: 'bg-yellow-400',
+  };
+
+  return (
+    <div className="relative pl-10">
+      <div
+        className={`absolute left-[11px] top-3 w-3 h-3 rounded-full border-2 border-surface ${
+          dotColor[item.status] || 'bg-gray-400'
+        }`}
+      />
+
+      <Link
+        to={`/groups/${item.groupId}/payments`}
+        className="block bg-surface-card border border-white/10 rounded-xl p-4 hover:bg-surface-hover transition-colors"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium truncate">{item.groupName}</p>
+              <StatusBadge status={item.status} />
+            </div>
+            <p className="text-text-muted text-xs mt-0.5">
+              {MONTH_NAMES[item.month]} {item.year} · ₹{item.amount}
+            </p>
+            {item.status === 'VERIFIED' && item.verifiedAt && (
+              <p className="text-green-400 text-xs mt-1">
+                Paid on {formatDate(item.submittedAt || item.verifiedAt)}
+                {item.verifiedBy && ` · Verified by ${item.verifiedBy.name}`}
+              </p>
+            )}
+            {item.status === 'SUBMITTED' && (
+              <p className="text-blue-400 text-xs mt-1">
+                Awaiting verification
+              </p>
+            )}
+            {item.status === 'MISSED' && (
+              <p className="text-red-400 text-xs mt-1">
+                Payment missed
+              </p>
+            )}
+            {item.status === 'PENDING' && (
+              <p className="text-yellow-400 text-xs mt-1">
+                Payment pending
+              </p>
+            )}
+            {item.remarks && (
+              <p className="text-text-muted text-xs mt-1 italic">
+                "{item.remarks}"
+              </p>
+            )}
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
+}
