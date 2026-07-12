@@ -140,7 +140,7 @@ export default function Payments() {
 
   if (loading) {
     return (
-      <div className="p-8 max-w-5xl mx-auto space-y-6">
+      <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-6">
         <PaymentCardSkeleton />
         <div className="space-y-3">
           <TableRowSkeleton cols={5} />
@@ -153,7 +153,7 @@ export default function Payments() {
 
   if (error && !dashboard) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-sm text-red-400">
           {error}
         </div>
@@ -169,7 +169,7 @@ export default function Payments() {
   );
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
+    <div className="p-4 md:p-8 max-w-5xl mx-auto">
       {toast && (
         <div className="fixed top-4 right-4 z-50 bg-accent text-black px-4 py-2 rounded-lg text-sm font-medium shadow-lg">
           {toast}
@@ -593,7 +593,7 @@ function OwnerView({
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         <StatBox label="Collected" value={`₹${stats.collected}`} sub={`of ₹${stats.totalExpected}`} />
         <StatBox label="Paid" value={stats.paidCount} sub={`${stats.totalMembers} members`} />
         <StatBox label="Submitted" value={stats.submittedCount} sub="Awaiting verify" />

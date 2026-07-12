@@ -65,7 +65,7 @@ export default function CreateGroup() {
   };
 
   return (
-    <div className="p-8 max-w-lg mx-auto">
+    <div className="p-4 md:p-8 max-w-lg mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Create Group</h1>
         <p className="text-text-secondary text-sm mt-1">

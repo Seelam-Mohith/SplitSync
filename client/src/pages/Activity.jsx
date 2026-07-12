@@ -106,7 +106,7 @@ export default function Activity() {
 
   if (error) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-sm text-red-400">
           {error}
         </div>
@@ -115,7 +115,7 @@ export default function Activity() {
   }
 
   return (
-    <div className="p-8 max-w-3xl mx-auto">
+    <div className="p-4 md:p-8 max-w-3xl mx-auto">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Activity</h1>
         <p className="text-text-secondary text-sm mt-1">
@@ -137,7 +137,7 @@ export default function Activity() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6">
             <SummaryBox label="Collected" value={`₹${totalCollected}`} sub={`of ₹${totalExpected}`} accent="text-green-400" />
             <SummaryBox label="Pending" value={pendingCount} sub="awaiting action" accent="text-yellow-400" />
             <SummaryBox label="Submitted" value={submittedCount} sub="awaiting verify" accent="text-blue-400" />

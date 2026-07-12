@@ -109,7 +109,7 @@ export default function GroupDetail() {
 
   if (error && !group) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-sm text-red-400">{error}</div>
       </div>
     );
@@ -120,7 +120,7 @@ export default function GroupDetail() {
   const nonOwnerMembers = (group.members || []).filter((m) => m.role !== 'OWNER');
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
+    <div className="p-4 md:p-8 max-w-2xl mx-auto">
       <button onClick={() => navigate('/groups')} className="text-text-secondary text-sm hover:text-text-primary mb-4">&larr; Back to Groups</button>
 
       {error && (

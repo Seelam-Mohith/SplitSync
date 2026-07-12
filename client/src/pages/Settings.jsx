@@ -58,7 +58,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="p-8 max-w-lg mx-auto">
+    <div className="p-4 md:p-8 max-w-lg mx-auto">
       {toast && (
         <div className="fixed top-4 right-4 z-50 bg-accent text-black px-4 py-2 rounded-lg text-sm font-medium shadow-lg">
           {toast}

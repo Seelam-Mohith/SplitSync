@@ -111,7 +111,7 @@ export default function Dashboard() {
   const recentTop = recentAll.slice(0, 5);
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="flex items-center gap-4 mb-8">
         <Avatar name={user?.name} size="lg" />
         <div>
@@ -124,7 +124,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
         <StatCard
           title="Active Groups"
           value={groups.length}

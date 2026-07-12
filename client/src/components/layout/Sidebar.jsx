@@ -14,54 +14,75 @@ export default function Sidebar() {
   const { user, logout } = useAuth();
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-60 bg-surface-light flex flex-col z-30">
-      <div className="px-6 py-6">
-        <h1 className="text-xl font-bold tracking-tight">
-          <span className="text-accent">Split</span>Sync
-        </h1>
-      </div>
-
-      <nav className="flex-1 px-3 space-y-1">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-white/10 text-text-primary'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
-              }`
-            }
-          >
-            <item.icon />
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
-
-      <div className="p-3 border-t border-white/10">
-        <div className="flex items-center gap-3 px-3 py-2">
-          <Avatar name={user?.name} size="sm" />
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">
-              {user?.name}
-            </p>
-            <p className="text-xs text-text-muted capitalize">
-              {user?.role}
-            </p>
-          </div>
+    <>
+      <aside className="hidden md:flex fixed left-0 top-0 h-full w-60 bg-surface-light flex-col z-30">
+        <div className="px-6 py-6">
+          <h1 className="text-xl font-bold tracking-tight">
+            <span className="text-accent">Split</span>Sync
+          </h1>
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full mt-1"
-          onClick={logout}
-        >
-          Sign out
-        </Button>
-      </div>
-    </aside>
+
+        <nav className="flex-1 px-3 space-y-1">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  isActive
+                    ? 'bg-white/10 text-text-primary'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                }`
+              }
+            >
+              <item.icon />
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="p-3 border-t border-white/10">
+          <div className="flex items-center gap-3 px-3 py-2">
+            <Avatar name={user?.name} size="sm" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">
+                {user?.name}
+              </p>
+              <p className="text-xs text-text-muted capitalize">
+                {user?.role}
+              </p>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full mt-1"
+            onClick={logout}
+          >
+            Sign out
+          </Button>
+        </div>
+      </aside>
+
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-surface-light border-t border-white/10 z-30 safe-area-bottom">
+        <div className="flex items-center justify-around h-14">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `flex flex-col items-center gap-0.5 px-3 py-1.5 text-[10px] font-medium transition-colors ${
+                  isActive ? 'text-accent' : 'text-text-muted'
+                }`
+              }
+            >
+              <item.icon />
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
+      </nav>
+    </>
   );
 }
 
@@ -96,5 +117,3 @@ function SettingsIcon() {
     </svg>
   );
 }
-
-

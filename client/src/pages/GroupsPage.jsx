@@ -34,7 +34,7 @@ export default function GroupsPage() {
 
   if (error) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <div className="bg-red-500/10 border border-red-500/20 rounded-lg px-4 py-3 text-sm text-red-400">
           {error}
         </div>
@@ -44,7 +44,7 @@ export default function GroupsPage() {
 
   if (groups.length === 0) {
     return (
-      <div className="p-8">
+      <div className="p-4 md:p-8">
         <Header />
         <div className="bg-surface-card border border-white/10 rounded-xl p-10 text-center">
           <p className="text-text-secondary text-lg">
@@ -59,7 +59,7 @@ export default function GroupsPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <Header />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
