@@ -315,6 +315,7 @@ export const getPaymentDashboard = async (req, res, next) => {
     };
 
     payments.forEach((p) => {
+      if (p.memberId._id.toString() === group.ownerId.toString()) return;
       if (p.status === 'VERIFIED') {
         stats.collected += p.amount;
         stats.paidCount++;

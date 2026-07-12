@@ -148,6 +148,68 @@ export default function Activity() {
           {groups.length > 0 && (
             <div className="mb-8">
               <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">
+                Groups Overview
+              </h2>
+              <div className="bg-surface-card border border-white/10 rounded-xl p-5 overflow-x-auto">
+                <div className="flex items-center gap-0 min-w-max">
+                  {groups.map((g, i) => {
+                    const gPayments = allPayments.find((r) => r.group._id === g._id)?.payments || [];
+                    const current = gPayments.find(
+                      (p) => p.month === currentMonth && p.year === currentYear
+                    );
+                    const isPaid = current?.status === 'VERIFIED';
+                    const isSubmitted = current?.status === 'SUBMITTED';
+                    const dotColor = isPaid
+                      ? 'bg-green-400 border-green-400'
+                      : isSubmitted
+                        ? 'bg-blue-400 border-blue-400'
+                        : current?.status === 'MISSED'
+                          ? 'bg-red-400 border-red-400'
+                          : 'bg-yellow-400 border-yellow-400';
+
+                    return (
+                      <Link
+                        key={g._id}
+                        to={`/groups/${g._id}/payments`}
+                        className="flex flex-col items-center group"
+                      >
+                        {i > 0 && (
+                          <div className={`h-0.5 w-12 md:w-16 ${isPaid ? 'bg-green-400/40' : 'bg-white/10'}`} />
+                        )}
+                        <div className="flex flex-col items-center">
+                          <div className={`w-4 h-4 rounded-full border-2 ${dotColor} transition-colors`} />
+                          <p className="text-[11px] text-text-secondary mt-2 text-center max-w-[80px] truncate group-hover:text-text-primary transition-colors">
+                            {g.name}
+                          </p>
+                          <p className="text-[10px] text-text-muted mt-0.5">
+                            ₹{current?.amount || g.contributionPerMember}
+                          </p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center gap-4 mt-4 pt-3 border-t border-white/5 text-[11px] text-text-muted">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-green-400" /> Paid
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-blue-400" /> Submitted
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-yellow-400" /> Pending
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-red-400" /> Missed
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {groups.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">
                 This Month by Group
               </h2>
               <div className="space-y-3">

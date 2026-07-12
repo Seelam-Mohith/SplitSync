@@ -13,14 +13,35 @@ export const ensureMonthlyPayments = async (groupId) => {
     year,
   }).lean();
 
-  if (existing.length > 0) return existing;
-
   const group = await Group.findById(groupId).lean();
-  if (!group) return [];
+  if (!group) return existing;
+
+  const ownerHasRecord = existing.some(
+    (p) => p.memberId.toString() === group.ownerId.toString()
+  );
+
+  if (existing.length > 0 && ownerHasRecord) return existing;
+
+  if (existing.length > 0 && !ownerHasRecord) {
+    const dueDate = new Date(year, month - 1, group.dueDay);
+    if (dueDate < now) {
+      dueDate.setMonth(dueDate.getMonth() + 1);
+      dueDate.setDate(group.dueDay);
+    }
+    await Payment.create({
+      groupId,
+      memberId: group.ownerId,
+      month,
+      year,
+      amount: group.contributionPerMember,
+      dueDate,
+      status: 'PENDING',
+    }).catch(() => {});
+    return Payment.find({ groupId, month, year }).lean();
+  }
 
   const members = await GroupMember.find({
     groupId,
-    userId: { $ne: group.ownerId },
   }).lean();
 
   if (members.length === 0) return [];
