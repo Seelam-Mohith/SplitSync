@@ -7,43 +7,10 @@ export const ensureMonthlyPayments = async (groupId) => {
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
 
-  const existing = await Payment.find({
-    groupId,
-    month,
-    year,
-  }).lean();
-
   const group = await Group.findById(groupId).lean();
-  if (!group) return existing;
+  if (!group) return [];
 
-  const ownerHasRecord = existing.some(
-    (p) => p.memberId.toString() === group.ownerId.toString()
-  );
-
-  if (existing.length > 0 && ownerHasRecord) return existing;
-
-  if (existing.length > 0 && !ownerHasRecord) {
-    const dueDate = new Date(year, month - 1, group.dueDay);
-    if (dueDate < now) {
-      dueDate.setMonth(dueDate.getMonth() + 1);
-      dueDate.setDate(group.dueDay);
-    }
-    await Payment.create({
-      groupId,
-      memberId: group.ownerId,
-      month,
-      year,
-      amount: group.contributionPerMember,
-      dueDate,
-      status: 'PENDING',
-    }).catch(() => {});
-    return Payment.find({ groupId, month, year }).lean();
-  }
-
-  const members = await GroupMember.find({
-    groupId,
-  }).lean();
-
+  const members = await GroupMember.find({ groupId }).lean();
   if (members.length === 0) return [];
 
   const dueDate = new Date(year, month - 1, group.dueDay);
@@ -52,21 +19,25 @@ export const ensureMonthlyPayments = async (groupId) => {
     dueDate.setDate(group.dueDay);
   }
 
-  const records = members.map((m) => ({
-    groupId,
-    memberId: m.userId,
-    month,
-    year,
-    amount: group.contributionPerMember,
-    dueDate,
-    status: 'PENDING',
-  }));
+  for (const m of members) {
+    await Payment.findOneAndUpdate(
+      { groupId, memberId: m.userId, month, year },
+      {
+        $setOnInsert: {
+          groupId,
+          memberId: m.userId,
+          month,
+          year,
+          amount: group.contributionPerMember,
+          dueDate,
+          status: 'PENDING',
+        },
+      },
+      { upsert: true, new: true, runValidators: true }
+    ).catch(() => {});
+  }
 
-  const created = await Payment.insertMany(records, { ordered: false }).catch(
-    () => []
-  );
-
-  return created.length > 0 ? created : existing;
+  return Payment.find({ groupId, month, year }).lean();
 };
 
 export const markMissedPayments = async () => {

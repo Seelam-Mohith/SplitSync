@@ -165,7 +165,7 @@ export default function Payments() {
 
   const { stats, history } = dashboard;
   const currentPayment = (dashboard.payments || []).find(
-    (p) => p.month === currentMonth && p.year === currentYear
+    (p) => p.month === currentMonth && p.year === currentYear && p.memberId?._id === user?._id
   );
 
   return (
@@ -262,6 +262,22 @@ function MemberView({ currentPayment, history, stats, onSubmit, actionLoading, c
         name: 'SplitSync',
         description: `Payment for ${orderData.groupName}`,
         order_id: orderData.orderId,
+        config: {
+          display: {
+            blocks: {
+              utib: {
+                name: 'Pay using UPI',
+                instruments: [
+                  { method: 'upi' },
+                ],
+              },
+            },
+            sequence: ['block.utib'],
+            preferences: {
+              show_default_blocks: true,
+            },
+          },
+        },
         handler: async (response) => {
           try {
             await paymentService.verifyRazorpayPayment({

@@ -21,6 +21,7 @@ export const getMyPayments = async (req, res, next) => {
     }
 
     await markMissedPayments();
+    await ensureMonthlyPayments(groupId);
 
     if (membership.role === 'OWNER') {
       const payments = await Payment.find({ groupId })

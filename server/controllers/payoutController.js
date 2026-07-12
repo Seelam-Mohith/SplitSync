@@ -2,13 +2,15 @@ import crypto from 'crypto';
 import Group from '../models/Group.js';
 import User from '../models/User.js';
 import Payment from '../models/Payment.js';
+import GroupMember from '../models/GroupMember.js';
+import { ensureMonthlyPayments } from '../services/paymentService.js';
 
 export const createRazorpayOrder = async (req, res, next) => {
   try {
     const razorpay = (await import('../config/razorpay.js')).default;
     const { paymentId } = req.params;
 
-    const payment = await Payment.findById(paymentId)
+    let payment = await Payment.findById(paymentId)
       .populate('groupId', 'ownerId name')
       .lean();
 

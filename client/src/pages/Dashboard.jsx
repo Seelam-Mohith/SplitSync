@@ -36,7 +36,7 @@ export default function Dashboard() {
               const { data: pData } = await api.get(`/payments/group/${g._id}`);
               const payments = pData.data.payments || [];
               const current = payments.find(
-                (p) => p.month === month && p.year === year
+                (p) => p.month === month && p.year === year && p.memberId?._id === user?._id
               );
               const lastVerified = payments.find((p) => p.status === 'VERIFIED');
               const pending = payments.filter((p) => p.status === 'PENDING' || p.status === 'SUBMITTED');

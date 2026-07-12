@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import api from '../api/axios';
 import Spinner from '../components/ui/Spinner';
 import StatusBadge from '../components/payments/StatusBadge';
@@ -17,6 +18,7 @@ function formatDate(d) {
 }
 
 export default function Activity() {
+  const { user } = useAuth();
   const [groups, setGroups] = useState([]);
   const [allPayments, setAllPayments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -155,7 +157,7 @@ export default function Activity() {
                   {groups.map((g, i) => {
                     const gPayments = allPayments.find((r) => r.group._id === g._id)?.payments || [];
                     const current = gPayments.find(
-                      (p) => p.month === currentMonth && p.year === currentYear
+                      (p) => p.month === currentMonth && p.year === currentYear && p.memberId?._id === user?._id
                     );
                     const isPaid = current?.status === 'VERIFIED';
                     const isSubmitted = current?.status === 'SUBMITTED';
@@ -216,7 +218,7 @@ export default function Activity() {
                 {groups.map((g) => {
                   const gPayments = allPayments.find((r) => r.group._id === g._id)?.payments || [];
                   const current = gPayments.find(
-                    (p) => p.month === currentMonth && p.year === currentYear
+                    (p) => p.month === currentMonth && p.year === currentYear && p.memberId?._id === user?._id
                   );
                   return (
                     <Link
