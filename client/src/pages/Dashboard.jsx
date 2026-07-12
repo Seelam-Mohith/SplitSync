@@ -7,11 +7,6 @@ import PlatformLogo from '../components/ui/PlatformLogo';
 import Spinner from '../components/ui/Spinner';
 import StatusBadge from '../components/payments/StatusBadge';
 
-const MONTH_NAMES = [
-  '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-];
-
 export default function Dashboard() {
   const { user } = useAuth();
   const [groups, setGroups] = useState([]);
@@ -49,7 +44,6 @@ export default function Dashboard() {
                 lastVerified,
                 pendingCount: pending.length,
                 totalPaid,
-                recentPayments: payments.slice(0, 3),
               };
             } catch {
               paymentMap[g._id] = null;
@@ -97,18 +91,6 @@ export default function Dashboard() {
       }
     }
   });
-
-  const recentAll = [];
-  groups.forEach((g) => {
-    const p = groupPayments[g._id];
-    if (p?.recentPayments) {
-      p.recentPayments.forEach((pay) => {
-        recentAll.push({ ...pay, groupName: g.name, groupType: g.subscriptionType, groupId: g._id });
-      });
-    }
-  });
-  recentAll.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-  const recentTop = recentAll.slice(0, 5);
 
   return (
     <div className="p-4 md:p-8">
@@ -210,30 +192,6 @@ export default function Dashboard() {
               })}
             </div>
           </div>
-
-          {recentTop.length > 0 && (
-            <div>
-              <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
-              <div className="bg-surface-card border border-white/10 rounded-xl divide-y divide-white/5">
-                {recentTop.map((r) => (
-                  <Link
-                    key={r._id}
-                    to={`/groups/${r.groupId}/payments`}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-surface-hover transition-colors"
-                  >
-                    <PlatformLogo type={r.groupType} size="sm" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{r.groupName}</p>
-                      <p className="text-text-muted text-xs">
-                        {MONTH_NAMES[r.month]} {r.year} · ₹{r.amount}
-                      </p>
-                    </div>
-                    <StatusBadge status={r.status} />
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
 
           <div>
             <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>

@@ -152,18 +152,10 @@ export default function Activity() {
 
           {groups.length > 0 && (
             <div className="mb-8">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
-                    Groups Overview
-                  </h2>
-                  <div className="flex items-center gap-3 text-[11px] text-text-muted">
-                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-400" /> Pending</span>
-                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-400" /> Submitted</span>
-                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400" /> Paid</span>
-                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" /> Missed</span>
-                  </div>
-                </div>
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+                  Groups Overview
+                </h2>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => scrollRef.current.scrollBy({ left: -160, behavior: 'smooth' })}
@@ -178,6 +170,12 @@ export default function Activity() {
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                   </button>
                 </div>
+              </div>
+              <div className="flex items-center gap-3 text-[11px] text-text-muted mb-3">
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-400" /> Pending</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-400" /> Submitted</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400" /> Paid</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" /> Missed</span>
               </div>
               <div className="relative">
                 <div ref={scrollRef} className="overflow-x-auto scrollbar-hide">
