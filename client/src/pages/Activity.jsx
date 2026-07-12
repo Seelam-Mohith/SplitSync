@@ -53,7 +53,9 @@ export default function Activity() {
   const timeline = [];
   allPayments.forEach(({ group, payments }) => {
     payments.forEach((p) => {
-      timeline.push({ ...p, groupName: group.name, groupType: group.subscriptionType, groupId: group._id });
+      if (p.memberId?._id === user?._id) {
+        timeline.push({ ...p, groupName: group.name, groupType: group.subscriptionType, groupId: group._id });
+      }
     });
   });
 
@@ -76,7 +78,7 @@ export default function Activity() {
 
   allPayments.forEach(({ payments }) => {
     payments.forEach((p) => {
-      if (p.month === currentMonth && p.year === currentYear) {
+      if (p.month === currentMonth && p.year === currentYear && p.memberId?._id === user?._id) {
         totalExpected += p.amount;
         if (p.status === 'VERIFIED') { totalCollected += p.amount; verifiedCount++; }
         else if (p.status === 'SUBMITTED') submittedCount++;
