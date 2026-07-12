@@ -34,7 +34,7 @@ export const ensureMonthlyPayments = async (groupId) => {
         },
       },
       { upsert: true, new: true, runValidators: true }
-    ).catch(() => {});
+    );
   }
 
   return Payment.find({ groupId, month, year }).lean();
