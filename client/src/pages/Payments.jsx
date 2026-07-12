@@ -196,29 +196,7 @@ export default function Payments() {
         </p>
       </div>
 
-      {isOwner ? (
-        <OwnerView
-          stats={stats}
-          history={history}
-          payments={filteredPayments}
-          filter={filter}
-          setFilter={setFilter}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          editingPayment={editingPayment}
-          setEditingPayment={setEditingPayment}
-          editForm={editForm}
-          setEditForm={setEditForm}
-          confirmAction={confirmAction}
-          setConfirmAction={setConfirmAction}
-          onAction={handleOwnerAction}
-          actionLoading={actionLoading}
-          currentMonth={currentMonth}
-          currentYear={currentYear}
-        />
-      ) : (
+      {!isOwner && (
         <MemberView
           currentPayment={currentPayment}
           history={history}
@@ -228,6 +206,39 @@ export default function Payments() {
           currentMonth={currentMonth}
           currentYear={currentYear}
         />
+      )}
+
+      {isOwner && (
+        <div className="space-y-6 mb-8">
+          <OwnerPayCard
+            currentPayment={currentPayment}
+            onSubmit={handleSubmit}
+            actionLoading={actionLoading}
+            currentMonth={currentMonth}
+            currentYear={currentYear}
+          />
+          <OwnerView
+            stats={stats}
+            history={history}
+            payments={filteredPayments}
+            filter={filter}
+            setFilter={setFilter}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            editingPayment={editingPayment}
+            setEditingPayment={setEditingPayment}
+            editForm={editForm}
+            setEditForm={setEditForm}
+            confirmAction={confirmAction}
+            setConfirmAction={setConfirmAction}
+            onAction={handleOwnerAction}
+            actionLoading={actionLoading}
+            currentMonth={currentMonth}
+            currentYear={currentYear}
+          />
+        </div>
       )}
 
       {confirmAction && (
@@ -389,6 +400,130 @@ function MemberView({ currentPayment, history, stats, onSubmit, actionLoading, c
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function OwnerPayCard({ currentPayment, onSubmit, actionLoading, currentMonth, currentYear }) {
+  const [paying, setPaying] = useState(false);
+
+  const handlePayNow = async () => {
+    if (!currentPayment) return;
+    setPaying(true);
+    try {
+      const orderData = await paymentService.createRazorpayOrder(currentPayment._id);
+
+      const options = {
+        key: orderData.keyId,
+        amount: orderData.amount * 100,
+        currency: orderData.currency,
+        name: 'SplitSync',
+        description: `Payment for ${orderData.groupName}`,
+        order_id: orderData.orderId,
+        config: {
+          display: {
+            blocks: {
+              utib: {
+                name: 'Pay using UPI',
+                instruments: [
+                  { method: 'upi' },
+                ],
+              },
+            },
+            sequence: ['block.utib'],
+            preferences: {
+              show_default_blocks: true,
+            },
+          },
+        },
+        handler: async (response) => {
+          try {
+            await paymentService.verifyRazorpayPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+              paymentId: currentPayment._id,
+            });
+            window.location.reload();
+          } catch {
+            alert('Payment was successful but verification failed. Contact support.');
+          }
+        },
+        prefill: {
+          method: 'upi',
+        },
+        theme: {
+          color: '#1db954',
+          backdrop_color: 'rgba(0,0,0,0.6)',
+        },
+        modal: {
+          ondismiss: () => setPaying(false),
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', () => {
+        alert('Payment failed. Please try again.');
+        setPaying(false);
+      });
+      rzp.open();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to initiate payment');
+      setPaying(false);
+    }
+  };
+
+  if (!currentPayment) {
+    return (
+      <div className="bg-surface-card border border-accent/30 rounded-xl p-6">
+        <EmptyState
+          title="No payment record"
+          description="Payment records for this month have not been created yet."
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-surface-card border border-accent/30 rounded-xl p-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <h2 className="font-semibold">Your Payment</h2>
+          <span className="text-[11px] px-2 py-0.5 rounded-full bg-accent/10 text-accent font-medium">Owner</span>
+        </div>
+        <StatusBadge status={currentPayment.status} size="md" />
+      </div>
+      <div className="flex items-baseline gap-1 mb-2">
+        <span className="text-3xl font-bold">₹{currentPayment.amount}</span>
+        <span className="text-text-muted text-sm">/month</span>
+      </div>
+      <p className="text-text-secondary text-sm mb-1">
+        Due by {formatDate(currentPayment.dueDate)}
+      </p>
+      {currentPayment.status === 'SUBMITTED' && currentPayment.submittedAt && (
+        <p className="text-blue-400 text-sm mb-4">
+          Submitted on {formatDate(currentPayment.submittedAt)}
+        </p>
+      )}
+      {currentPayment.status === 'VERIFIED' && (
+        <p className="text-green-400 text-sm mb-4">
+          Paid
+        </p>
+      )}
+      {currentPayment.status === 'PENDING' && (
+        <Button
+          className="w-full mt-4"
+          onClick={handlePayNow}
+          loading={paying}
+        >
+          Pay ₹{currentPayment.amount} via UPI
+        </Button>
+      )}
+      {currentPayment.status === 'SUBMITTED' && (
+        <div className="mt-4 bg-blue-500/10 border border-blue-500/20 rounded-lg px-4 py-3 text-sm text-blue-400">
+          Waiting for verification.
+        </div>
+      )}
     </div>
   );
 }
