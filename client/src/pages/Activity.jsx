@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import api from '../api/axios';
@@ -23,6 +23,7 @@ export default function Activity() {
   const [allPayments, setAllPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -151,11 +152,35 @@ export default function Activity() {
 
           {groups.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">
-                Groups Overview
-              </h2>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+                    Groups Overview
+                  </h2>
+                  <div className="flex items-center gap-3 text-[11px] text-text-muted">
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-400" /> Pending</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-400" /> Submitted</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-400" /> Paid</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400" /> Missed</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => scrollRef.current.scrollBy({ left: -160, behavior: 'smooth' })}
+                    className="w-7 h-7 flex items-center justify-center rounded-lg bg-surface-card border border-white/10 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+                  </button>
+                  <button
+                    onClick={() => scrollRef.current.scrollBy({ left: 160, behavior: 'smooth' })}
+                    className="w-7 h-7 flex items-center justify-center rounded-lg bg-surface-card border border-white/10 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                  </button>
+                </div>
+              </div>
               <div className="relative">
-                <div className="overflow-x-auto scrollbar-hide">
+                <div ref={scrollRef} className="overflow-x-auto scrollbar-hide">
                   <div className="flex gap-3 min-w-max pr-8">
                     {groups.map((g) => {
                       const gPayments = allPayments.find((r) => r.group._id === g._id)?.payments || [];
