@@ -29,11 +29,12 @@ export function AuthProvider({ children }) {
   );
 
   const register = useCallback(
-    async (name, email, password) => {
+    async (name, email, password, phone) => {
       const { data } = await api.post('/auth/register', {
         name,
         email,
         password,
+        phone,
       });
       storeAuth(data.data);
       return data.data;

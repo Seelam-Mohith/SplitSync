@@ -50,6 +50,10 @@ const paymentService = {
   updateUpiId(upiId) {
     return api.put('/user/profile', { upiId }).then((r) => r.data.data.user);
   },
+
+  updateProfile(updates) {
+    return api.put('/user/profile', updates).then((r) => r.data.data.user);
+  },
 };
 
 export default paymentService;

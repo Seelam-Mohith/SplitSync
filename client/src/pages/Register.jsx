@@ -9,6 +9,7 @@ export default function Register() {
   const [form, setForm] = useState({
     name: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: '',
   });
@@ -35,7 +36,7 @@ export default function Register() {
     }
 
     try {
-      await register(form.name, form.email, form.password);
+      await register(form.name, form.email, form.password, form.phone);
     } catch (err) {
       setError(
         err.response?.data?.message || 'Registration failed'
@@ -85,6 +86,15 @@ export default function Register() {
             value={form.email}
             onChange={handleChange}
             required
+          />
+
+          <Input
+            label="Phone Number"
+            type="tel"
+            name="phone"
+            placeholder="+91 98765 43210"
+            value={form.phone}
+            onChange={handleChange}
           />
 
           <Input

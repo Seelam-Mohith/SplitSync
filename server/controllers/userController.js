@@ -2,7 +2,7 @@ import User from '../models/User.js';
 
 export const updateProfile = async (req, res, next) => {
   try {
-    const { upiId } = req.body;
+    const { upiId, phone } = req.body;
     const updates = {};
 
     if (upiId !== undefined) {
@@ -13,6 +13,10 @@ export const updateProfile = async (req, res, next) => {
         throw error;
       }
       updates.upiId = upiId;
+    }
+
+    if (phone !== undefined) {
+      updates.phone = phone;
     }
 
     const user = await User.findByIdAndUpdate(req.user._id, updates, {

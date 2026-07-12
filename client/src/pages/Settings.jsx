@@ -8,6 +8,8 @@ export default function Settings() {
   const { user, updateUser } = useAuth();
   const [editing, setEditing] = useState(!user?.upiId);
   const [upiId, setUpiId] = useState(user?.upiId || '');
+  const [editingPhone, setEditingPhone] = useState(false);
+  const [phone, setPhone] = useState(user?.phone || '');
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState('');
   const [error, setError] = useState('');
@@ -39,6 +41,22 @@ export default function Settings() {
     setError('');
   };
 
+  const handleSavePhone = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      const updatedUser = await paymentService.updateProfile({ phone });
+      updateUser(updatedUser);
+      setEditingPhone(false);
+      showToast('Phone number saved');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to save');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="p-8 max-w-lg mx-auto">
       {toast && (
@@ -67,6 +85,43 @@ export default function Settings() {
             <div className="px-3 py-2 bg-surface-light border border-white/10 rounded-lg text-sm text-text-primary">
               {user?.email}
             </div>
+          </div>
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs text-text-secondary">Phone</label>
+              {user?.phone && !editingPhone && (
+                <button
+                  onClick={() => { setEditingPhone(true); setError(''); }}
+                  className="text-accent hover:text-accent-hover text-xs"
+                >
+                  Edit
+                </button>
+              )}
+            </div>
+            {editingPhone ? (
+              <form onSubmit={handleSavePhone} className="flex gap-2">
+                <input
+                  type="tel"
+                  placeholder="+91 98765 43210"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="flex-1 px-3 py-2 bg-surface-light border border-white/10 rounded-lg text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent"
+                />
+                <Button type="submit" size="sm" loading={saving}>Save</Button>
+                <Button type="button" size="sm" variant="secondary" onClick={() => { setEditingPhone(false); setPhone(user?.phone || ''); }}>Cancel</Button>
+              </form>
+            ) : user?.phone ? (
+              <div className="px-3 py-2 bg-surface-light border border-white/10 rounded-lg text-sm text-text-primary">
+                {user.phone}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <div className="px-3 py-2 bg-surface-light border border-white/10 rounded-lg text-sm text-text-muted flex-1">
+                  Not set
+                </div>
+                <Button size="sm" variant="secondary" onClick={() => { setEditingPhone(true); setError(''); }}>Add</Button>
+              </div>
+            )}
           </div>
         </div>
       </div>

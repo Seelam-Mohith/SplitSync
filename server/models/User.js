@@ -33,6 +33,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    phone: {
+      type: String,
+      trim: true,
+      default: '',
+      match: [/^[\d\s\+\-]{7,15}$/, 'Please provide a valid phone number'],
+    },
     upiId: {
       type: String,
       trim: true,
