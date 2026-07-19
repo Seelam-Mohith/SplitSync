@@ -1,11 +1,4 @@
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const dotenv = require('dotenv');
-const path = require('path');
-const { fileURLToPath } = require('url');
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.resolve(__dirname, '.env') });
-
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import connectDB, { isConnected } from './config/db.js';
