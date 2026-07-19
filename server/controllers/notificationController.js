@@ -60,18 +60,22 @@ export const checkReminders = async (_req, res, next) => {
 
 export const sendTestNotification = async (req, res, next) => {
   try {
-    const count = await sendPushToUser(
+    const result = await sendPushToUser(
       req.user._id,
       'SplitSync Test',
       'Push notifications are working! You will receive payment reminders here.',
       { url: '/dashboard' }
     );
 
-    if (count === 0) {
+    if (result.reason === 'firebase_not_configured') {
+      return res.status(500).json({ success: false, message: 'Push notifications not configured on server. Firebase credentials missing.' });
+    }
+
+    if (result.sent === 0) {
       return res.status(400).json({ success: false, message: 'No notification tokens found. Enable notifications in Settings first.' });
     }
 
-    res.json({ success: true, message: `Test notification sent to ${count} device(s)` });
+    res.json({ success: true, message: `Test notification sent to ${result.sent} device(s)` });
   } catch (error) {
     next(error);
   }

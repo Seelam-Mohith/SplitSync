@@ -92,10 +92,10 @@ export async function checkAndSendReminders() {
 }
 
 export async function sendPushToUser(userId, title, body, data = {}) {
-  if (!messaging) return 0;
+  if (!messaging) return { sent: 0, reason: 'firebase_not_configured' };
 
   const tokens = await FcmToken.find({ userId }).lean();
-  if (tokens.length === 0) return 0;
+  if (tokens.length === 0) return { sent: 0, reason: 'no_tokens' };
 
   const message = {
     notification: { title, body },
@@ -122,5 +122,5 @@ export async function sendPushToUser(userId, title, body, data = {}) {
     }
   }
 
-  return result.successCount;
+  return { sent: result.successCount, reason: null };
 }
