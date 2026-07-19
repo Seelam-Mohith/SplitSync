@@ -31,6 +31,8 @@ function getReminderTitle(daysUntilDue, amount, groupName) {
 }
 
 export async function checkAndSendReminders() {
+  if (!messaging) return { sent: 0, checked: 0 };
+
   const now = new Date();
 
   const pendingPayments = await Payment.find({ status: 'PENDING' })
@@ -90,6 +92,8 @@ export async function checkAndSendReminders() {
 }
 
 export async function sendPushToUser(userId, title, body, data = {}) {
+  if (!messaging) return 0;
+
   const tokens = await FcmToken.find({ userId }).lean();
   if (tokens.length === 0) return 0;
 

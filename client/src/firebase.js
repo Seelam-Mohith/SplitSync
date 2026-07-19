@@ -2,12 +2,12 @@ import { initializeApp } from 'firebase/app';
 import { getMessaging } from 'firebase/messaging';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyB7WhRdjJRhABZG6HP5p3i2jNqakcR6I3s',
-  authDomain: 'splitsync-f9adb.firebaseapp.com',
-  projectId: 'splitsync-f9adb',
-  storageBucket: 'splitsync-f9adb.firebasestorage.app',
-  messagingSenderId: '189863896972',
-  appId: '1:189863896972:web:b3109a552deba7c50ad8a9',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
