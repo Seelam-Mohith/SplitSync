@@ -1,16 +1,20 @@
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { useNotifications } from '../hooks/useNotifications';
+import api from '../api/axios';
 import paymentService from '../api/paymentService';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 
 export default function Settings() {
   const { user, updateUser } = useAuth();
+  const { enabled: notifEnabled, loading: notifLoading, error: notifError, requestPermission, disableNotifications } = useNotifications(user);
   const [editing, setEditing] = useState(!user?.upiId);
   const [upiId, setUpiId] = useState(user?.upiId || '');
   const [editingPhone, setEditingPhone] = useState(false);
   const [phone, setPhone] = useState(user?.phone || '');
   const [saving, setSaving] = useState(false);
+  const [testLoading, setTestLoading] = useState(false);
   const [toast, setToast] = useState('');
   const [error, setError] = useState('');
 
@@ -54,6 +58,18 @@ export default function Settings() {
       setError(err.response?.data?.message || 'Failed to save');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleTestNotification = async () => {
+    setTestLoading(true);
+    try {
+      const { data } = await api.post('/notifications/test');
+      showToast(data.message);
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Failed to send test notification');
+    } finally {
+      setTestLoading(false);
     }
   };
 
@@ -126,7 +142,7 @@ export default function Settings() {
         </div>
       </div>
 
-      <div className="bg-surface-card border border-white/10 rounded-xl p-6">
+      <div className="bg-surface-card border border-white/10 rounded-xl p-6 mb-6">
         <div className="flex items-center justify-between mb-1">
           <h2 className="font-semibold">Payment Settings</h2>
           {user?.upiId && !editing && (
@@ -183,6 +199,58 @@ export default function Settings() {
           <p className="text-text-secondary text-sm">
             No UPI ID configured. Add one to receive payments from group members.
           </p>
+        )}
+      </div>
+
+      <div className="bg-surface-card border border-white/10 rounded-xl p-6">
+        <h2 className="font-semibold mb-1">Push Notifications</h2>
+        <p className="text-text-muted text-sm mb-4">
+          Get reminded about upcoming and overdue payments.
+        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-text-primary font-medium">
+              {notifEnabled ? 'Enabled' : 'Disabled'}
+            </p>
+            <p className="text-text-secondary text-xs mt-0.5">
+              {notifEnabled
+                ? 'You will receive payment reminders'
+                : 'Turn on to receive payment due reminders'}
+            </p>
+          </div>
+          {notifEnabled ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={disableNotifications}
+              loading={notifLoading}
+            >
+              Disable
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              onClick={requestPermission}
+              loading={notifLoading}
+            >
+              Enable
+            </Button>
+          )}
+        </div>
+        {notifError && (
+          <p className="text-red-400 text-xs mt-2">{notifError}</p>
+        )}
+        {notifEnabled && (
+          <div className="mt-4 pt-4 border-t border-white/10">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={handleTestNotification}
+              loading={testLoading}
+            >
+              Send Test Notification
+            </Button>
+          </div>
         )}
       </div>
     </div>

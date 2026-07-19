@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import NotificationInitializer from './components/NotificationInitializer';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import MainLayout from './components/layout/MainLayout';
 import Login from './pages/Login';
@@ -17,6 +18,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <NotificationInitializer />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
